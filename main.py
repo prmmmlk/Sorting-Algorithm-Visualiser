@@ -8,8 +8,6 @@ class Visualiser:
         # Dimensions
         self.WIDTH = 900
         self.HEIGHT = 500
-        self.REC_WIDTH = 20
-        self.REC_COUNT = int(self.WIDTH/self.REC_WIDTH)
 
         # Color constants
         self.BLUE = 1
@@ -76,6 +74,9 @@ class Visualiser:
 class Rectangles(Visualiser):
     def __init__(self) -> None:
         super().__init__()
+        self.REC_WIDTH = 20
+        self.REC_COUNT = int(self.WIDTH/self.REC_WIDTH)
+
         self.recs = self.rec_array()
         self.states = self.rec_state()
 
