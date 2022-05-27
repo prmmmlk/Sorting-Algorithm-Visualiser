@@ -16,7 +16,7 @@ class Visualiser:
         self.YELLOW = 4
         self.AQUA = 5
         self.LIME = 6
-        
+
         # Dict which maps to colors
         self.color_map = {
             self.BLUE: (0, 0, 255),
@@ -46,10 +46,10 @@ class Visualiser:
 
         # Keybindings which correspond to an event
         self.events = {
-            pygame.K_b: 'b', # bubble sort
-            pygame.K_s: 's', # selection sort
-            pygame.K_m: 'm', # merge sort
-            pygame.K_g: None # generate new set
+            pygame.K_b: 'b',  # bubble sort
+            pygame.K_s: 's',  # selection sort
+            pygame.K_m: 'm',  # merge sort
+            pygame.K_g: None  # generate new set
         }
 
         # determines which algorithm to run
@@ -60,7 +60,7 @@ class Visualiser:
 
         # used when running 'finished' animation
         self.finalCount = 0
-        
+
         # frame rate
         self.FRAMES = 50
 
@@ -87,8 +87,8 @@ class Rectangles(Visualiser):
     # Function which generates the state of each rectangle to determine whether it is not sorted, being sorted or sorted.
     def rec_state(self):
         return [1 for _ in range(self.REC_COUNT)]
-    
-    # Runs when a key is pressed. 
+
+    # Runs when a key is pressed.
     def run_event(self, key):
         self.runSort = key
         self.cycle = 0
@@ -125,6 +125,7 @@ class Rectangles(Visualiser):
         self.clock.tick(1000)
         pygame.display.update()
 
+
 class Algorithm(Rectangles):
     def __init__(self) -> None:
         super().__init__()
@@ -144,7 +145,7 @@ class Algorithm(Rectangles):
 
                     # Swap the rectangles and generate a new set of rectangles and update the screen.
                     self.recs[rec_height], self.recs[rec_height +
-                                                        1] = self.recs[rec_height+1], self.recs[rec_height]
+                                                     1] = self.recs[rec_height+1], self.recs[rec_height]
                     for i in range(self.REC_COUNT):
                         self.generateCaption()
                         self.generateRectangles(i)
@@ -165,7 +166,7 @@ class Algorithm(Rectangles):
                     pygame.display.update()
         else:
             self.finished()
-    
+
     def selectionSort(self):
         # Check if the number of iterations is still less than the number of rectangles (i.e. if the rectangles are fully sorted).
         if self.cycle < len(self.recs):
@@ -173,7 +174,7 @@ class Algorithm(Rectangles):
             # Keeps track of the shortest rectangle.
             minimumIndex = self.cycle
             for rec_height in range(self.cycle+1, len(self.recs)):
-                #self.window.fill('BLACK')
+                # self.window.fill('BLACK')
                 # Sets the state of the rectangles being compared.
                 self.states[minimumIndex] = 3
                 self.states[rec_height] = 4
@@ -191,11 +192,10 @@ class Algorithm(Rectangles):
                 else:
                     self.states[rec_height] = 1
                     pass
-            
+
             # The smallest rectangle is placed at the beginning of the array.
             self.recs[self.cycle], self.recs[minimumIndex] = self.recs[minimumIndex], self.recs[self.cycle]
 
-    
             # Refreshes the screen.
             for i in range(self.REC_COUNT):
                 # self.states[self.cycle] = 1
@@ -219,7 +219,7 @@ class Algorithm(Rectangles):
             middle = (left + right) // 2
             self.merge_sort_alg(data, left, middle)
             self.merge_sort_alg(data, middle+1, right)
-            
+
             # Calls the function to merge the small arrays into a larger one.
             self.merge(data, left, middle, right)
 
@@ -259,7 +259,7 @@ class Algorithm(Rectangles):
                     self.states[dataIndex] = 1
                     pygame.display.update()
                     rightIndex += 1
-            
+
             # Check if the left array has been fully traversed.
             elif leftIndex < len(leftPart):
                 data[dataIndex] = leftPart[leftIndex]
@@ -269,7 +269,7 @@ class Algorithm(Rectangles):
                 self.states[dataIndex] = 1
                 pygame.display.update()
                 leftIndex += 1
-            
+
             # Check if the right array has been fully traversed.
             else:
                 data[dataIndex] = rightPart[rightIndex]
@@ -281,9 +281,6 @@ class Algorithm(Rectangles):
                 rightIndex += 1
 
 
-			
-
-
 if __name__ == '__main__':
     pygame.init()
 
@@ -291,7 +288,6 @@ if __name__ == '__main__':
 
     visualiser = Visualiser()
     algorithm = Algorithm()
-
 
     while running:
 
@@ -308,29 +304,27 @@ if __name__ == '__main__':
                     print(f"Key error: {error}")
                     pass
 
-        if visualiser.runSort == None:
-            algorithm.reset_rectangles()
-
-        if algorithm.runSort == 'b':
-            algorithm.bubbleSort()
-            algorithm.cycle += 1
-            
-        if algorithm.runSort == 's':
-            algorithm.selectionSort()
-            algorithm.cycle += 1
-
-        if algorithm.runSort == 'm':
-            if algorithm.cycle < 1:
-                algorithm.merge_sort(algorithm.recs)
+        match algorithm.runSort:
+            case None:
+                algorithm.reset_rectangles()
+            case 'b':
+                algorithm.bubbleSort()
                 algorithm.cycle += 1
+            case 's':
+                algorithm.selectionSort()
+                algorithm.cycle += 1
+            case 'm':
+                if algorithm.cycle < 1:
+                    algorithm.merge_sort(algorithm.recs)
+                    algorithm.cycle += 1
 
-                # Refresh the screen.
-                for i in range(algorithm.REC_COUNT):
-                    algorithm.generateCaption()
-                    algorithm.generateRectangles(i)
-                pygame.display.update()
-            else:
-                # Display the finished animation.
-                algorithm.finished()
+                    # Refresh the screen.
+                    for i in range(algorithm.REC_COUNT):
+                        algorithm.generateCaption()
+                        algorithm.generateRectangles(i)
+                    pygame.display.update()
+                else:
+                    # Display the finished animation.
+                    algorithm.finished()
 
         pygame.display.update()
